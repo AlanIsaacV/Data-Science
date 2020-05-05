@@ -4,8 +4,12 @@ import scrapy
 
 class AmazonSpider(scrapy.Spider):
     name = 'amazon'
-    allowed_domains = ['amazon.com.mx']
-    start_urls = ['https://www.amazon.com.mx/s?k=laptop&rh=n%3A10189669011&__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&ref=nb_sb_noss']
+    # allowed_domains = ['amazon.com.mx']
+    start_urls = ['https://www.amazon.com.mx/laptop-Laptops-Computadoras-Componentes-y-Accesorios/s?k=laptop&rh=n%3A10189669011']
 
     def parse(self, response):
-        pass
+        name = response.css('.a-color-base.a-text-normal::text').getall()
+
+        yield {
+            'name' : name
+            }
