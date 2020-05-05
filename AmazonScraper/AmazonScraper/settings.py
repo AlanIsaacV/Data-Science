@@ -56,14 +56,9 @@ ROBOTSTXT_OBEY = True
 #    'AmazonScraper.middlewares.AmazonscraperDownloaderMiddleware': 543,
 #}
 
-PROXY_POOL_ENABLED = True
-
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
-
-	'scrapy_proxy_pool.middlewares.ProxyPoolMiddleware': 610,
-    'scrapy_proxy_pool.middlewares.BanDetectionMiddleware': 620,
 }
 
 
