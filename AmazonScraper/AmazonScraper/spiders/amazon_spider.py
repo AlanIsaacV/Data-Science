@@ -9,8 +9,9 @@ class AmazonSpider(scrapy.Spider):
 
     def parse(self, response):
         items = AmazonscraperItem()
+        all_products = response.css('.sg-col-20-of-28 > .sg-col-inner')
 
-        for product in response.css('.sg-col-inner'):
+        for product in all_products: 
 
             items['name'] = product.css('.a-color-base.a-text-normal::text').get()
             items['price_current'] = product.css('.a-price-whole::text').get()
