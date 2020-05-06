@@ -6,7 +6,7 @@ import datetime
 
 class AmazonSpider(scrapy.Spider):
     name = 'amazon'
-    # allowed_domains = ['amazon.com.mx']
+    allowed_domains = ['amazon.com.mx']
     start_urls = ['https://www.amazon.com.mx/laptop-Laptops-Computadoras-Componentes-y-Accesorios/s?k=laptop&rh=n%3A10189669011']
 
     custom_settings = {
@@ -16,6 +16,8 @@ class AmazonSpider(scrapy.Spider):
             'csv': 'scrapy.exporters.CsvItemExporter',
         },
         'FEED_EXPORT_ENCODING': 'utf-8',
+        
+        'DEPTH_LIMIT' : 3,
     }
 
     def parse(self, response):
@@ -42,3 +44,7 @@ class AmazonSpider(scrapy.Spider):
             items['importation'] = importation
 
             yield items
+
+        next_page = response.css('.a-last a::attr(href)').get()
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
