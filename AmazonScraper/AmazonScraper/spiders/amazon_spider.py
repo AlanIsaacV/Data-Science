@@ -7,7 +7,7 @@ import datetime
 
 class AmazonSpider(scrapy.Spider):
     name = 'amazon'
-    # allowed_domains = ['amazon.com.mx']
+    allowed_domains = ['amazon.com.mx']
     start_urls = ['https://www.amazon.com.mx/laptop-Laptops-Computadoras-Componentes-y-Accesorios/s?k=laptop&rh=n%3A10189669011']
 
     custom_settings = {
