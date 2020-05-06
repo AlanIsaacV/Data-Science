@@ -38,4 +38,7 @@ class AmazonSpider(scrapy.Spider):
             score = score.split(' ')[0] if score is not None else None
             items['score'] = score
 
+            importation = False if product.css('.a-color-secondary .s-image').get() is None else True
+            items['importation'] = importation
+
             yield items
