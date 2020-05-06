@@ -13,3 +13,5 @@ class AmazonscraperItem(scrapy.Item):
     name = scrapy.Field()
     price_current = scrapy.Field()
     price_original = scrapy.Field()
+    reviews_number = scrapy.Field()
+    score = scrapy.Field()
