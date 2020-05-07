@@ -16,3 +16,4 @@ class AmazonscraperItem(scrapy.Item):
     reviews_number = scrapy.Field()
     score = scrapy.Field()
     importation = scrapy.Field()
+    specs = scrapy.Field()
