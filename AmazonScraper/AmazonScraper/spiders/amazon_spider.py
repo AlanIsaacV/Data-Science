@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from ..items import AmazonscraperItem
+from ..items import AmazonproductItem
 
 import datetime
 
@@ -16,8 +17,8 @@ class AmazonSpider(scrapy.Spider):
             'csv': 'scrapy.exporters.CsvItemExporter',
         },
         'FEED_EXPORT_ENCODING': 'utf-8',
-        
-        'DEPTH_LIMIT' : 3,
+
+        'DEPTH_LIMIT' : 4
     }
 
     def parse(self, response):
@@ -25,7 +26,6 @@ class AmazonSpider(scrapy.Spider):
         all_products = response.css('.sg-col-20-of-28 > .sg-col-inner')
 
         for product in all_products: 
-
             items['name'] = product.css('.a-color-base.a-text-normal::text').get()
 
             price_current_int = product.css('.a-price-whole::text').get()
@@ -45,6 +45,24 @@ class AmazonSpider(scrapy.Spider):
 
             yield items
 
+        all_products_links = response.css('h2 .a-link-normal.a-text-normal::attr(href)').getall()
+        for product_link in all_products_links:
+            yield response.follow(product_link, callback=self.parse_product)
+
         next_page = response.css('.a-last a::attr(href)').get()
         if next_page is not None:
             yield response.follow(next_page, callback=self.parse)
+
+
+    def parse_product(self, response):
+        rows = response.css('.pdTab table tr')
+        rows.pop()
+        specs = {}
+        for row in rows:
+            try:
+                column = row.css('td::text').getall()
+                specs[column[0]] = column[1]
+            except IndexError:
+                pass
+        del specs['Clasificación en los más vendidos de Amazon']
+        yield specs
