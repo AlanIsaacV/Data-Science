@@ -14,8 +14,6 @@ class AmazonSpider(scrapy.Spider):
             'csv': 'scrapy.exporters.CsvItemExporter',
         },
         'FEED_EXPORT_ENCODING': 'utf-8',
-
-        'DEPTH_LIMIT' : 2
     }
 
     def _validate_field(self, field):
@@ -67,6 +65,9 @@ class AmazonSpider(scrapy.Spider):
                 except IndexError:
                     pass
             del specs['Clasificación en los más vendidos de Amazon']
+            del specs['ASIN']
+            del specs['Lithium Battery Packaging']
+            del specs['Pilas:']
         else:
             pass
 
