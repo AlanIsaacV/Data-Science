@@ -15,10 +15,16 @@ class AmazonSpider(scrapy.Spider):
         },
         'FEED_EXPORT_ENCODING': 'utf-8',
 
-        'DEPTH_LIMIT' : 10
+        'DEPTH_LIMIT' : 2
     }
 
-    items = AmazonscraperItem()
+    def _validate_field(self, field):
+        if field is not None:
+            return field
+        else: 
+            None
+
+
 
     def parse(self, response):
         product_links = response.css('h2 .a-link-normal.a-text-normal::attr(href)').getall()
@@ -30,35 +36,38 @@ class AmazonSpider(scrapy.Spider):
             yield response.follow(next_page, callback=self.parse)
 
 
+
     def parse_product(self, response):
         specs = {}
 
         name = response.css('#productTitle::text').get()
-        name.replace('     \n', '')
-        specs['name'] = name
+        specs['name'] = self._validate_field(name)
         
         price_current = response.css('#priceblock_ourprice::text').get()
-        price_current = price_current if price_current is not None else None
-        specs['price_current'] = price_current
+        specs['price_current'] = self._validate_field(price_current)
 
         price_original = response.css('.a-text-strike::text').get()
-        price_original = price_original if price_original is not None else None
-        specs['price_original'] = price_original
+        specs['price_original'] = self._validate_field(price_original)
 
-        specs['reviews_number'] = response.css('#acrCustomerReviewText::text').get()
+        reviews_number = response.css('#acrCustomerReviewText::text').get()
+        specs['reviews_number'] = self._validate_field(reviews_number)
         
-        specs['seller'] = response.css('#bylineInfo::text').get()
+        seller = response.css('#bylineInfo::text').get()
+        specs['seller'] = self._validate_field(seller)
 
-        specs['score'] = response.css('#acrPopover .a-icon-alt::text').get()
-
+        score = response.css('#acrPopover .a-icon-alt::text').get()
+        specs['score'] = self._validate_field(score)
 
         rows = response.css('.pdTab table tr')
-        for row in rows:
-            try:
-                column = row.css('td::text').getall()
-                specs[column[0]] = column[1]
-            except IndexError:
-                pass
-        del specs['Clasificación en los más vendidos de Amazon']
+        if rows is not None:
+            for row in rows:
+                try:
+                    column = row.css('td::text').getall()
+                    specs[column[0]] = column[1]
+                except IndexError:
+                    pass
+            del specs['Clasificación en los más vendidos de Amazon']
+        else:
+            pass
 
         yield specs
