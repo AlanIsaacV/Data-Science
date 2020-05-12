@@ -8,7 +8,7 @@ class AmazonSpider(scrapy.Spider):
     start_urls = ['https://www.amazon.com.mx/laptop-Laptops-Computadoras-Componentes-y-Accesorios/s?k=laptop&rh=n%3A10189669011']
 
     custom_settings = {
-        'FEED_URI': 'amazon_' + datetime.datetime.today().strftime('%m%d') + '.csv',
+        'FEED_URI': '../Data/amazon_' + datetime.datetime.today().strftime('%m%d') + '.csv',
         'FEED_FORMAT': 'csv',
         'FEED_EXPORTERS': {
             'csv': 'scrapy.exporters.CsvItemExporter',
